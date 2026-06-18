@@ -7,9 +7,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    outputs:
-      version: ${{ steps.version.outputs.version }}
-
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -21,15 +18,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Get project version
-        id: version
-        run: |
-          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-      - name: Build  + Test + Sonar
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Build  + Test
         run: mvn clean verify
 
       - name: Upload Test Reports
