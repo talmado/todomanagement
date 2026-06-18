@@ -36,9 +36,9 @@ public class Todo {
     @PrePersist
     private void prePersist() {
         if (this.createdAt == null || this.updatedAt == null) {
-            Instant now = Instant.now();
-            this.createdAt = now;
-            this.updatedAt = now;
+            Instant instant = Instant.now();
+            this.createdAt = instant;
+            this.updatedAt = instant;
             this.completed = false;
         }
     }
