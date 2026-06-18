@@ -10,7 +10,7 @@
     </parent>
     <groupId>de.mtala</groupId>
     <artifactId>todomanagement</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0</version>
     <name>todomanagement</name>
     <description>todomanagement</description>
     <url/>
@@ -136,6 +136,7 @@
                 </executions>
             </plugin>
         </plugins>
+        <finalName>todo-service</finalName>
     </build>
 
 </project>
