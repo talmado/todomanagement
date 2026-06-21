@@ -2,6 +2,7 @@ package de.mtala.todomanagement.controller;
 
 import de.mtala.todomanagement.dto.TodoRequest;
 import de.mtala.todomanagement.dto.TodoResponse;
+import de.mtala.todomanagement.exception.TodoNotFoundException;
 import de.mtala.todomanagement.service.TodoService;
 import java.time.Instant;
 import java.util.List;
@@ -52,7 +53,7 @@ class TodoControllerTest {
     }
 
     @Test
-    void createTodo() throws Exception {
+    void givenTodoRequest_whenCreateTodo_thenReturnValidTodo() throws Exception {
         when(todoService.createTodo(javaTodoRequest)).thenReturn(javaTodoResponse);
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/todos")
                         .content("""
@@ -67,5 +68,25 @@ class TodoControllerTest {
                 .andExpect(jsonPath("$.title").value("java seminar"))
                 .andExpect(jsonPath("$.description").value("java for beginner"))
                 .andExpect(jsonPath("$.completed").value(false));
+    }
+
+    @Test
+    void givenTodoId_whenGetTodoById_thenReturnTodo() throws Exception {
+        when(todoService.findTodoById(1L)).thenReturn(javaTodoResponse);
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/todos/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.title").value("java seminar"))
+                .andExpect(jsonPath("$.description").value("java for beginner"))
+                .andExpect(jsonPath("$.completed").value(false));
+    }
+
+    @Test
+    void givenTodoId_whenGetTodoById_thenReturnException() throws Exception {
+        when(todoService.findTodoById(1L)).thenThrow(new TodoNotFoundException("Todo with id 1 not found"));
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/todos/1"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Todo with id 1 not found"))
+                .andExpect(jsonPath("$.statusCode").value(404));
     }
 }
